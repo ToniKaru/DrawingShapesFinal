@@ -19,6 +19,10 @@ abstract public class Shape {
 
     abstract public void draw(GraphicsContext context);
 
+    abstract public boolean isHit(double x, double y);
+
+    abstract public void reSize(double size);
+
     public Color getColor() {
         return color;
     }

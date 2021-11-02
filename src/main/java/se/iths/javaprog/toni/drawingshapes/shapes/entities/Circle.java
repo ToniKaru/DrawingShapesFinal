@@ -9,19 +9,31 @@ import java.util.Objects;
 public class Circle extends Shape {
 
     private double radius;
-    private double diameter;
+    //private double diameter;
 
     public Circle(Color color, double x, double y, double radius) {
         super(color, x, y);
         this.radius = radius;
-        this.diameter = radius * 2;
     }
-
 
     @Override
     public void draw(GraphicsContext gc) {
         gc.setFill(this.getColor());
-        gc.fillOval(getX()-radius, getY()-radius, diameter,diameter);
+        gc.fillOval(getX()-radius, getY()-radius, radius*2,radius*2);
+    }
+
+    @Override
+    public boolean isHit(double x, double y) {
+        double dx = x - getX();
+        double dy = y - getY();
+        double distanceFromCenterSquared = dx * dx + dy * dy;
+
+        return distanceFromCenterSquared < radius*radius;
+    }
+
+    @Override
+    public void reSize(double radius){
+        this.radius = radius;
     }
 
     public double getRadius() {
@@ -32,33 +44,5 @@ public class Circle extends Shape {
         this.radius = radius;
     }
 
-    public double getDiameter() {
-        return diameter;
-    }
 
-    public void setDiameter(double diameter) {
-        this.diameter = diameter;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Circle circle = (Circle) o;
-        return Double.compare(circle.radius, radius) == 0 && Double.compare(circle.diameter, diameter) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), radius, diameter);
-    }
-
-    @Override
-    public String toString() {
-        return "Circle{" +
-                "radius=" + radius +
-                ", diameter=" + diameter +
-                '}';
-    }
 }

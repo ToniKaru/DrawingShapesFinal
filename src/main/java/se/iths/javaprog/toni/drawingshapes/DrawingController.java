@@ -1,12 +1,15 @@
 package se.iths.javaprog.toni.drawingshapes;
 
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shapes;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
+
+import java.util.Optional;
 
 public class DrawingController {
 
@@ -27,7 +30,6 @@ public class DrawingController {
 
     public DrawingController(Model model){
         this.model = model;
-
     }
 
 
@@ -35,7 +37,6 @@ public class DrawingController {
         model = new Model();
         colorPicker.valueProperty().bindBidirectional(model.colorProperty());
         slider.valueProperty().bindBidirectional(model.sizeProperty());
-
 
     }
 
@@ -55,11 +56,18 @@ public class DrawingController {
         Platform.exit();
     }
 
-    public void canvasClicked(MouseEvent event) {
-    //        var gc = canvas.getGraphicsContext2D();
-        Shape shape = Shapes.circleOf(model.getColor(), event.getX(), event.getY(), model.getSize());
-        model.shapes.add(shape);
-
+    public void canvasClick(MouseEvent event) {
+        if (event.isControlDown()) {
+            Optional<Shape> shape = model.shapes.stream()
+                    .filter(s -> s.isHit(event.getX(), event.getY()))
+                    .findFirst();
+            shape.ifPresent(s -> s.setColor(model.getColor()));
+            shape.ifPresent(s -> s.reSize(model.getSize()));
+        }
+        else {
+            Shape shape = Shapes.circleOf(model.getColor(), event.getX(), event.getY(), model.getSize());
+            model.shapes.add(shape);
+        }
         drawCanvas();
     }
 
@@ -70,7 +78,5 @@ public class DrawingController {
             shape.draw(gc);
         }
     }
-
-
 
 }

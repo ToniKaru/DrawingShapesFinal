@@ -24,16 +24,13 @@
     </top>
 
     <center>
-        <Canvas fx:id="canvas" height="600" onMouseClicked="#canvasClicked" width="800" />
+        <Canvas fx:id="canvas" height="600" onMouseClicked="#canvasClick" width="800" />
     </center>
 
     <left>
         <VBox>
               <ColorPicker fx:id="colorPicker" prefHeight="30.0" prefWidth="55.0" />
-              <Slider fx:id="slider" majorTickUnit="20.0" max="50.0" min="10.0"
-                       orientation="VERTICAL"
-                      showTickLabels="true" showTickMarks="true" snapToTicks="true"
-                       />
+              <Slider fx:id="slider" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
         </VBox>
     </left>
 
