@@ -1,10 +1,10 @@
-package com.example.drawingshapes;
+package se.iths.javaprog.toni.drawingshapes;
 
-import com.example.drawingshapes.shapes.Shapes;
+import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
+import se.iths.javaprog.toni.drawingshapes.shapes.Shapes;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
@@ -33,9 +33,7 @@ public class DrawingController {
 
     public void initialize(){
         model = new Model();
-
-        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-
+        colorPicker.valueProperty().bindBidirectional(model.colorProperty());
     }
 
 
@@ -46,13 +44,13 @@ public class DrawingController {
     }
 
     @FXML
-    protected void onCircleButtonClick(){  }
-
-
+    protected void onCircleButtonClick(){
+        System.out.println("Implement: Set shape to circle.");
+    }
 
 
     public void onSave(){
-        System.out.println("Implement save with try catch");
+        System.out.println("Implement: save with try catch");
     }
 
     public void onExit(){
@@ -60,8 +58,18 @@ public class DrawingController {
     }
 
     public void canvasClicked(MouseEvent event) {
-        var context = canvas.getGraphicsContext2D();
+        var gc = canvas.getGraphicsContext2D();
+        Shape shape = Shapes.circleOf(model.getColor(), event.getX(), event.getY(), 15);
+        model.shapes.add(shape);
 
-        context.fillOval(event.getX(), event.getY(), 25,25);
+        drawCanvas();
+    }
+
+    private void drawCanvas() {
+        var gc = canvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        for (var shape : model.shapes) {
+            shape.draw(gc);
+        }
     }
 }

@@ -1,6 +1,6 @@
-package com.example.drawingshapes.shapes;
+package se.iths.javaprog.toni.drawingshapes.shapes;
 
-import com.example.drawingshapes.shapes.entities.Circle;
+import se.iths.javaprog.toni.drawingshapes.shapes.entities.Circle;
 import javafx.scene.paint.Color;
 
 public class Shapes {

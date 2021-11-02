@@ -1,6 +1,7 @@
-package com.example.drawingshapes.shapes.entities;
+package se.iths.javaprog.toni.drawingshapes.shapes.entities;
 
-import com.example.drawingshapes.shapes.Shape;
+import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.Objects;
@@ -16,8 +17,9 @@ public class Circle extends Shape {
 
 
     @Override
-    public void draw() {
-
+    public void draw(GraphicsContext gc) {
+        gc.setFill(this.getColor());
+        gc.fillOval(getX()-radius, getY()-radius, radius*2,radius*2);
     }
 
     public double getRadius() {

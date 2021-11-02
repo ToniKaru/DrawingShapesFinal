@@ -1,5 +1,6 @@
-package com.example.drawingshapes.shapes;
+package se.iths.javaprog.toni.drawingshapes.shapes;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.Objects;
@@ -16,7 +17,7 @@ abstract public class Shape {
         this.y = y;
     }
 
-    abstract public void draw();
+    abstract public void draw(GraphicsContext context);
 
     public Color getColor() {
         return color;

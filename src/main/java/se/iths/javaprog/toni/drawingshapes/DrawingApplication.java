@@ -1,4 +1,4 @@
-package com.example.drawingshapes;
+package se.iths.javaprog.toni.drawingshapes;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

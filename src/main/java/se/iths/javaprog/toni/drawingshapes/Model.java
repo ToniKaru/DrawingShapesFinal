@@ -1,13 +1,19 @@
-package com.example.drawingshapes;
+package se.iths.javaprog.toni.drawingshapes;
 
 
+import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 
 public class Model {
 
     private final BooleanProperty inColor;
     private final ObjectProperty<Color> color;
+
+    ObservableList<Shape> shapes =
+            FXCollections.observableArrayList();
 
 
     Model(){

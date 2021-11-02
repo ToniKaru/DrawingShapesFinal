@@ -8,7 +8,7 @@
 <?import java.net.URL?>
 <BorderPane xmlns="http://javafx.com/javafx/11.0.2"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.drawingshapes.DrawingController"
+            fx:controller="se.iths.javaprog.toni.drawingshapes.DrawingController"
             prefWidth="800" prefHeight="600">
     <top>
         <VBox>
@@ -20,9 +20,8 @@
             </MenuBar>
             <ToolBar prefHeight="40.0" prefWidth="100.0">
                 <HBox alignment="CENTER" spacing="5">
-                   <ColorPicker prefHeight="40.0" prefWidth="60.0" />
-                    <Button fx:id="circleButton"  mnemonicParsing="false" text="Circle" />
-                    <Button onAction="#onTestButtonClick" text="Hello!" />
+                   <ColorPicker fx:id="colorPicker" prefHeight="40.0" prefWidth="60.0" />
+                    <Button fx:id="circleButton" onAction="#onTestButtonClick" text="Circle" />
                 </HBox>
             </ToolBar>
 
@@ -33,7 +32,6 @@
     <center>
         <Canvas fx:id="canvas" width="800" height="600" onMouseClicked="#canvasClicked"/>
     </center>
-    <Label fx:id="testText" />
     <stylesheets>
         <URL value="@css/stylesheet.css"/>
     </stylesheets>
