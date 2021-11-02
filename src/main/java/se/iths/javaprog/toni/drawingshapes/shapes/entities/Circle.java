@@ -8,18 +8,21 @@ import java.util.Objects;
 
 public class Circle extends Shape {
 
+    private double diameter;
     private double radius;
-    //private double diameter;
 
-    public Circle(Color color, double x, double y, double radius) {
+    public Circle(Color color, double x, double y, double diameter) {
         super(color, x, y);
-        this.radius = radius;
+        this.diameter = diameter;
+        this.radius = diameter * 0.5;
     }
+
+
 
     @Override
     public void draw(GraphicsContext gc) {
         gc.setFill(this.getColor());
-        gc.fillOval(getX()-radius, getY()-radius, radius*2,radius*2);
+        gc.fillOval(getX()-radius, getY()-radius, diameter,diameter);
     }
 
     @Override
@@ -32,8 +35,17 @@ public class Circle extends Shape {
     }
 
     @Override
-    public void reSize(double radius){
-        this.radius = radius;
+    public void reSize(double diameter){
+        this.diameter = diameter;
+        this.radius = diameter * 0.5;
+    }
+
+    public double getDiameter() {
+        return diameter;
+    }
+
+    public void setDiameter(double diameter) {
+        this.diameter = diameter;
     }
 
     public double getRadius() {
@@ -43,6 +55,4 @@ public class Circle extends Shape {
     public void setRadius(double radius) {
         this.radius = radius;
     }
-
-
 }

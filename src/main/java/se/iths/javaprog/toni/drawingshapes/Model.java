@@ -17,6 +17,7 @@ public class Model {
     private final DoubleProperty size;
 
 
+
     ObservableList<Shape> shapes =
             FXCollections.observableArrayList();
 
@@ -25,7 +26,6 @@ public class Model {
         this.inColor = new SimpleBooleanProperty();
         this.color = new SimpleObjectProperty<>(Color.BLACK);
         this.size = new SimpleDoubleProperty(15d);
-
     }
 
     public Color getColor(){

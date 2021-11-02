@@ -1,5 +1,6 @@
 package se.iths.javaprog.toni.drawingshapes;
 
+import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
@@ -22,11 +23,20 @@ public class DrawingController {
     @FXML
     private Slider slider;
 
+    @FXML
+    private Button circleButton;
+    @FXML
+    private Button squareButton;
+
+    private String shapeName;
 
 
 
 
-    public DrawingController(){}
+
+    public DrawingController(){
+        shapeName = "circle";
+    }
 
     public DrawingController(Model model){
         this.model = model;
@@ -41,10 +51,6 @@ public class DrawingController {
     }
 
 
-    @FXML
-    protected void onCircleButtonClick(){
-        System.out.println("Implement: Set shape to circle.");
-    }
 
     @FXML
     protected void onSave(){
@@ -65,11 +71,12 @@ public class DrawingController {
             shape.ifPresent(s -> s.reSize(model.getSize()));
         }
         else {
-            Shape shape = Shapes.circleOf(model.getColor(), event.getX(), event.getY(), model.getSize());
+            Shape shape = makeShape(model.getColor(), event.getX(), event.getY(), model.getSize());
             model.shapes.add(shape);
         }
         drawCanvas();
     }
+
 
     private void drawCanvas() {
         var gc = canvas.getGraphicsContext2D();
@@ -77,6 +84,25 @@ public class DrawingController {
         for (var shape : model.shapes) {
             shape.draw(gc);
         }
+    }
+
+    @FXML
+    protected void onCircleButtonClick(){
+        shapeName = "circle";
+    }
+
+    @FXML
+    protected void onSquareButtonClick() {
+        shapeName = "square";
+    }
+
+    private Shape makeShape(Color color, double x, double y, Double size) {
+        return switch (shapeName) {
+            case "circle" -> Shapes.circleOf(color,x,y,size);
+            case "square" -> Shapes.squareOf(color,x,y,size);
+            default -> throw new IllegalArgumentException();
+        };
+
     }
 
 }
