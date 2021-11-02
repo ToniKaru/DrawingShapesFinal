@@ -1,6 +1,8 @@
 package se.iths.javaprog.toni.drawingshapes;
 
 
+import javafx.scene.control.Slider;
+import javafx.util.StringConverter;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -12,6 +14,9 @@ public class Model {
     private final BooleanProperty inColor;
     private final ObjectProperty<Color> color;
 
+    private final DoubleProperty size;
+
+
     ObservableList<Shape> shapes =
             FXCollections.observableArrayList();
 
@@ -19,6 +24,8 @@ public class Model {
     Model(){
         this.inColor = new SimpleBooleanProperty();
         this.color = new SimpleObjectProperty<>(Color.BLACK);
+        this.size = new SimpleDoubleProperty(15d);
+
     }
 
     public Color getColor(){
@@ -45,5 +52,15 @@ public class Model {
         this.inColor.set(inColor);
     }
 
+    public Double getSize() {
+        return size.get();
+    }
 
+    public DoubleProperty sizeProperty() {
+        return size;
+    }
+
+    public void setSize(Double size) {
+        this.size.set(size);
+    }
 }
