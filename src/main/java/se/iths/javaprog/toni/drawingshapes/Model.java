@@ -1,13 +1,18 @@
 package se.iths.javaprog.toni.drawingshapes;
 
 
-import javafx.scene.control.Slider;
-import javafx.util.StringConverter;
+import se.iths.javaprog.toni.drawingshapes.command.UndoRedo;
+import se.iths.javaprog.toni.drawingshapes.command.commands.*;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
+import se.iths.javaprog.toni.drawingshapes.shapes.Shapes;
+
+import java.util.Optional;
+
+
 
 public class Model {
 
@@ -16,7 +21,7 @@ public class Model {
 
     private final DoubleProperty size;
 
-
+    private static String shapeName;
 
     ObservableList<Shape> shapes =
             FXCollections.observableArrayList();
@@ -25,7 +30,30 @@ public class Model {
     Model(){
         this.inColor = new SimpleBooleanProperty();
         this.color = new SimpleObjectProperty<>(Color.BLACK);
-        this.size = new SimpleDoubleProperty(15d);
+        this.size = new SimpleDoubleProperty(55d);
+        shapeName = "circle";
+    }
+
+
+    public void insertInUndoRedo(Shape shape, Color newColor){
+        UndoRedo.insertInUndoRedo( shape,  newColor);
+    }
+
+    private Optional<Shape> getLastShape() {
+        return shapes.stream()
+                .reduce((first, second) -> first);
+    }
+
+    public static Shape makeShape(Color color, double x, double y, Double size) {
+        return switch (shapeName) {
+            case "circle" -> Shapes.circleOf(color,x,y,size);
+            case "square" -> Shapes.squareOf(color,x,y,size);
+            default -> throw new IllegalArgumentException();
+        };
+    }
+
+    public void setShapeName(String shapeName) {
+        this.shapeName = shapeName;
     }
 
     public Color getColor(){

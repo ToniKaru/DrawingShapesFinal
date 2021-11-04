@@ -1,8 +1,10 @@
 package se.iths.javaprog.toni.drawingshapes;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
+import se.iths.javaprog.toni.drawingshapes.command.UndoRedo;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shapes;
 import javafx.application.Platform;
@@ -28,14 +30,26 @@ public class DrawingController {
     @FXML
     private Button squareButton;
 
-    private String shapeName;
+    @FXML
+    private ToggleGroup shapeSelection;
+
+    @FXML
+    private Button undoButton;
+    @FXML
+    private Button redoButton;
+
+    @FXML
+    private Button clearButton;
+
+
+
 
 
 
 
 
     public DrawingController(){
-        shapeName = "circle";
+
     }
 
     public DrawingController(Model model){
@@ -47,6 +61,8 @@ public class DrawingController {
         model = new Model();
         colorPicker.valueProperty().bindBidirectional(model.colorProperty());
         slider.valueProperty().bindBidirectional(model.sizeProperty());
+
+
 
     }
 
@@ -62,17 +78,34 @@ public class DrawingController {
         Platform.exit();
     }
 
+    public void undoButtonClick(MouseEvent event) {
+//        model.undo();
+        UndoRedo.undo();;
+        drawCanvas();
+    }
+
+    public void redoButtonClick(MouseEvent event) {
+//        model.redo();
+        UndoRedo.redo();
+        drawCanvas();
+    }
+
     public void canvasClick(MouseEvent event) {
         if (event.isControlDown()) {
             Optional<Shape> shape = model.shapes.stream()
                     .filter(s -> s.isHit(event.getX(), event.getY()))
-                    .findFirst();
+                    .reduce((first, second) -> second);
+            shape.ifPresent(s -> System.out.println("true"));
+
+//            shape.ifPresent(s -> UndoRedo.insertInUndoRedo(s, s.getSize, model.getSize()));
+            shape.ifPresent(s -> model.insertInUndoRedo(s, model.getColor()));
             shape.ifPresent(s -> s.setColor(model.getColor()));
-            shape.ifPresent(s -> s.reSize(model.getSize()));
+//            shape.ifPresent(s -> s.reSize(model.getSize()));
         }
         else {
-            Shape shape = makeShape(model.getColor(), event.getX(), event.getY(), model.getSize());
+            Shape shape = Model.makeShape(model.getColor(), event.getX(), event.getY(), model.getSize());
             model.shapes.add(shape);
+//            UndoRedo.insertInUndoRedo(shape, model.getSize(),model.getColor());
         }
         drawCanvas();
     }
@@ -86,23 +119,27 @@ public class DrawingController {
         }
     }
 
+//    @FXML
+//    protected void onShapeSelectionClick(){
+//        ReadOnlyObjectProperty<Toggle> choice = shapeSelection.selectedToggleProperty();
+//
+//    }
+
     @FXML
     protected void onCircleButtonClick(){
-        shapeName = "circle";
+        model.setShapeName("circle");
     }
 
     @FXML
     protected void onSquareButtonClick() {
-        shapeName = "square";
+        model.setShapeName("square");
     }
 
-    private Shape makeShape(Color color, double x, double y, Double size) {
-        return switch (shapeName) {
-            case "circle" -> Shapes.circleOf(color,x,y,size);
-            case "square" -> Shapes.squareOf(color,x,y,size);
-            default -> throw new IllegalArgumentException();
-        };
 
+
+    public void onClearButtonClick(MouseEvent event){
+        model.shapes.clear();
+        drawCanvas();
     }
 
 }
