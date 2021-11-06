@@ -31,8 +31,6 @@ public class Model {
     private UndoRedo undoRedo;
 
 
-
-
     Model() {
         this.inColor = new SimpleBooleanProperty();
         this.color = new SimpleObjectProperty<>(Color.BLACK);
@@ -41,14 +39,17 @@ public class Model {
         undoRedo = new UndoRedo();
     }
 
-    public void insertInUndoRedo(Shape shape){
-        undoRedo.insertInUndoRedo(shape);
+    public void insertInUndoRedoForDelete(List<Shape> shapes, Shape shape) {
+        undoRedo.insertInUndoRedoForDelete(shapes, shape);
+    }
+
+    public void insertInUndoRedo(List<Shape> shapes, Shape shape){
+        undoRedo.insertInUndoRedo(shapes, shape);
     }
 
     public void insertInUndoRedo(Shape shape, double newScale){
         undoRedo.insertInUndoRedo(shape, newScale);
     }
-
 
     public void insertInUndoRedo(Shape shape, Color oldColor, Color newColor){
         undoRedo.insertInUndoRedo(shape, oldColor, newColor);

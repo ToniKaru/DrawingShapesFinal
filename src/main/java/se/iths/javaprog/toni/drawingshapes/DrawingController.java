@@ -133,7 +133,7 @@ public class DrawingController {
         else {
             Shape shape = Model.makeShape(model.getColor(), event.getX(), event.getY(), model.getSize());
             model.shapes.add(shape);
-//            model.insertInUndoRedo(shape);
+            model.insertInUndoRedo(model.shapes, shape);
         }
         drawCanvas();
     }

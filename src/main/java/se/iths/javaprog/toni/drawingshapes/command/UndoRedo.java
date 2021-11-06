@@ -6,6 +6,7 @@ import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 
 public class UndoRedo {
 
@@ -40,8 +41,8 @@ public class UndoRedo {
 //    }
 
 
-    public void insertInUndoRedo(Shape shape){
-        Command cmd = new Create(shape);
+    public void insertInUndoRedo(List<Shape> shapes, Shape shape){
+        Command cmd = new Insert(shapes, shape);
         undoStack.push(cmd);
         redoStack.clear();
     }
@@ -58,14 +59,12 @@ public class UndoRedo {
         undoStack.push(cmd);
         redoStack.clear();
     }
-//
-//
-//    public void insertInUndoRedoForDelete(Shape shape){
-//        Command cmd = new Delete(shape);
-//        //shapes.remove(shape);
-//        undos.push(cmd);
-//        //       redos.clear();
-//    }
+
+    public void insertInUndoRedoForDelete(List<Shape> shapes, Shape shape){
+        Command cmd = new Delete(shapes, shape);
+        undoStack.push(cmd);
+        redoStack.clear();
+    }
 
 
 
