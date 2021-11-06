@@ -1,25 +1,37 @@
-package se.iths.javaprog.toni.drawingshapes.svgIO;
+package se.iths.javaprog.toni.drawingshapes.fileIO;
 
-import se.iths.javaprog.toni.drawingshapes.Model;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 import se.iths.javaprog.toni.drawingshapes.shapes.entities.Circle;
 import se.iths.javaprog.toni.drawingshapes.shapes.entities.Square;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SvgIO {
 
-    private static final String HOMEPATH = System.getProperty("user.home");
+//    public static Collection<Shape> getShapesFromFile(Path path){
+//        if(!Files.exists(path)){
+//            System.out.println("File not found");
+//            return List.of();
+//        }
+//        Collection<Shape> shapes = new ArrayList<>();
+//        try (Stream<String> lines = Files.lines(path)) {
+//            shapes = lines
+//                    .map(s -> s.createShape)
+//                    .collect(Collectors.toList());
+//        } catch (IOException e){
+//            System.out.println("Could not load shapes from file.");
+//        }
+//        return shapes;
+//    }
 
     public static void saveToFile(List<Shape> shapes,Path path, double height, double width){
-
-        File file = new File(String.valueOf(path));
         List<String> strings = new ArrayList<>();
         strings.add("!DOCTYPE html");
         strings.add("<svg height=\""+ height+"\" width=\""+ width+"\">\n");
@@ -30,21 +42,6 @@ public class SvgIO {
         } catch (IOException e){
             e.printStackTrace();
         }
-
-    }
-
-    public static void saveToFile(String text, Path path, double height, double width){
-
-        List<String> strings = new ArrayList<>();
-        strings.add("<svg height=\""+ height+"\" width=\""+ width+"\">\n");
-        strings.add(text);
-        strings.add("\n</svg> ");
-        try {
-            Files.write(path, strings);
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-
     }
 
     static void svgRow (Shape shape, List<String> strings) {
@@ -53,9 +50,7 @@ public class SvgIO {
         else if (shape instanceof Square)
             squareSvgRow((Square) shape, strings);
         else
-            throw new IllegalArgumentException();
-
-
+            return;
     }
 
     private static void squareSvgRow(Square s, List<String> strings) {

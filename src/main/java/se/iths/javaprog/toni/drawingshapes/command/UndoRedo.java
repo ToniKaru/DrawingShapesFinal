@@ -40,12 +40,12 @@ public class UndoRedo {
 //    }
 
 
-//    public static void insertInUndoRedo(Shape shape, double size, Color color){
-//        Command cmd = new Create(shape, size, color);
-//        undos.push(cmd);
-////        redos.clear();
-//    }
-//
+    public void insertInUndoRedo(Shape shape){
+        Command cmd = new Create(shape);
+        undoStack.push(cmd);
+        redoStack.clear();
+    }
+
     public void insertInUndoRedo(Shape shape, double newSize){
         Command cmd = new Resize(shape, newSize);
         undoStack.push(cmd);

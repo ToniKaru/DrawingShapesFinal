@@ -29,19 +29,6 @@
                </children>
             </Group>
             </ToolBar>
-<!--         <ToolBar prefHeight="40.0" prefWidth="100.0">-->
-<!--             <Group>-->
-<!--                 <fx:define>-->
-<!--                    <ToggleGroup fx:id="shapeSelection" />-->
-<!--                 </fx:define>-->
-<!--                 <HBox alignment="CENTER" spacing="5">-->
-<!--                     <RadioButton mnemonicParsing="false" selected="true" text="rCircle" toggleGroup="$shapeSelection" />-->
-<!--                     <RadioButton mnemonicParsing="false" text="rSquare" toggleGroup="$shapeSelection" />-->
-<!--                 </HBox>-->
-<!--             </Group>-->
-<!--         </ToolBar>-->
-
-
         </VBox>
     </top>
 

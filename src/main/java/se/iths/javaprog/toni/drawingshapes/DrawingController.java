@@ -1,12 +1,11 @@
 package se.iths.javaprog.toni.drawingshapes;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,11 +16,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-import static se.iths.javaprog.toni.drawingshapes.svgIO.SvgIO.saveToFile;
+import static se.iths.javaprog.toni.drawingshapes.fileIO.SvgIO.saveToFile;
 
 public class DrawingController {
 
-    Model model;
 
     @FXML
     private Canvas canvas;
@@ -29,15 +27,10 @@ public class DrawingController {
     private ColorPicker colorPicker;
     @FXML
     private Slider slider;
-
     @FXML
     private Button circleButton;
     @FXML
     private Button squareButton;
-
-    @FXML
-    private ToggleGroup shapeSelection;
-
     @FXML
     private Button undoButton;
     @FXML
@@ -47,17 +40,11 @@ public class DrawingController {
     @FXML
     private Button clearButton;
 
-
-
-
-    @FXML
-    VBox vbMenu;
+    private Model model;
     private Stage stage;
-    private Scene scene;
-
-
 
     private static final String HOMEPATH = System.getProperty("user.home");
+
 
     public void initialize(){
         model = new Model();
@@ -68,12 +55,17 @@ public class DrawingController {
 
     @FXML
     protected void onOpen(){
-        System.out.println("Implementing: open");
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("svg file", ".svg");
-        fileChooser.getExtensionFilters().add(extFilter);
-        fileChooser.setTitle("Open Dialog");
-        File file = fileChooser.showOpenDialog(scene.getWindow());
+//        System.out.println("Implementing: open");
+//        FileChooser fileChooser = new FileChooser();
+//        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("svg file", ".svg");
+//        fileChooser.getExtensionFilters().add(extFilter);
+//        fileChooser.setTitle("Open Dialog");
+//        File file = fileChooser.showOpenDialog(getWindow());
+//
+//        if (file != null){
+//            readFile(file.toPath(), canvas.getHeight(), canvas.getWidth());
+//        }
+
     }
 
     @FXML
@@ -84,8 +76,8 @@ public class DrawingController {
         chooser.setInitialDirectory(new File(HOMEPATH));
         chooser.setTitle("Save Dialog");
         chooser.setInitialFileName("myShapes");
-        setScene();
-        File file = chooser.showSaveDialog(scene.getWindow());
+
+        File file = chooser.showSaveDialog(getWindow());
 
         if (file != null){
             saveToFile(model.getAllShapes(), file.toPath(), canvas.getHeight(), canvas.getWidth());
@@ -95,8 +87,9 @@ public class DrawingController {
     public void setStage(Stage stage) throws IOException{
         this.stage = stage;
     }
-    private void setScene(){
-        scene = stage.getScene();
+    private Window getWindow(){
+        return stage.getScene().getWindow();
+
     }
 
     @FXML
@@ -135,13 +128,12 @@ public class DrawingController {
                 model.insertInUndoRedo(shape, scale);
                 shape.setScale(scale);
             }
-
-
         }
+
         else {
             Shape shape = Model.makeShape(model.getColor(), event.getX(), event.getY(), model.getSize());
             model.shapes.add(shape);
- //           model.insertInUndoRedo(shape, model.getScale(),model.getColor());
+//            model.insertInUndoRedo(shape);
         }
         drawCanvas();
     }
@@ -151,7 +143,6 @@ public class DrawingController {
 
     }
 
-
     private void drawCanvas() {
         var gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -159,12 +150,6 @@ public class DrawingController {
             shape.draw(gc);
         }
     }
-
-//    @FXML
-//    protected void onShapeSelectionClick(){
-//        ReadOnlyObjectProperty<Toggle> choice = shapeSelection.selectedToggleProperty();
-//
-//    }
 
     @FXML
     protected void onCircleButtonClick(){

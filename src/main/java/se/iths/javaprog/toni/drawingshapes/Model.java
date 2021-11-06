@@ -8,10 +8,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shapes;
-import se.iths.javaprog.toni.drawingshapes.svgIO.SvgIO;
 
 
-import java.net.PortUnreachableException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +39,10 @@ public class Model {
         this.size = new SimpleDoubleProperty(100d);
         shapeName = "circle";
         undoRedo = new UndoRedo();
+    }
+
+    public void insertInUndoRedo(Shape shape){
+        undoRedo.insertInUndoRedo(shape);
     }
 
     public void insertInUndoRedo(Shape shape, double newScale){

@@ -13,20 +13,15 @@ public class Resize implements Command {
         this.shape = shape;
         this.oldScale = shape.getScale();
         this.newScale = newScale;
-        System.out.println("oldScale: " + oldScale);
-        System.out.println("newScale: " + newScale);
     }
 
     @Override
     public void execute() {
         shape.setScale(newScale);
-
-
     }
 
     @Override
     public void unexecute() {
         shape.setScale(oldScale);
-
     }
 }
