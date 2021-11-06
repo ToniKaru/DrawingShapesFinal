@@ -1,18 +1,23 @@
 package se.iths.javaprog.toni.drawingshapes;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
-import se.iths.javaprog.toni.drawingshapes.command.UndoRedo;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
-import se.iths.javaprog.toni.drawingshapes.shapes.Shapes;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
+
+import static se.iths.javaprog.toni.drawingshapes.svgIO.SvgIO.saveToFile;
 
 public class DrawingController {
 
@@ -37,40 +42,61 @@ public class DrawingController {
     private Button undoButton;
     @FXML
     private Button redoButton;
-
+    @FXML
+    private Button deleteButton;
     @FXML
     private Button clearButton;
 
 
 
 
+    @FXML
+    VBox vbMenu;
+    private Stage stage;
+    private Scene scene;
 
 
 
-
-    public DrawingController(){
-
-    }
-
-    public DrawingController(Model model){
-        this.model = model;
-    }
-
+    private static final String HOMEPATH = System.getProperty("user.home");
 
     public void initialize(){
         model = new Model();
         colorPicker.valueProperty().bindBidirectional(model.colorProperty());
         slider.valueProperty().bindBidirectional(model.sizeProperty());
 
-
-
     }
 
-
+    @FXML
+    protected void onOpen(){
+        System.out.println("Implementing: open");
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("svg file", ".svg");
+        fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.setTitle("Open Dialog");
+        File file = fileChooser.showOpenDialog(scene.getWindow());
+    }
 
     @FXML
     protected void onSave(){
-        System.out.println("Implement: save with try catch");
+        FileChooser chooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("svg file", ".svg");
+        chooser.getExtensionFilters().add(extFilter);
+        chooser.setInitialDirectory(new File(HOMEPATH));
+        chooser.setTitle("Save Dialog");
+        chooser.setInitialFileName("myShapes");
+        setScene();
+        File file = chooser.showSaveDialog(scene.getWindow());
+
+        if (file != null){
+            saveToFile(model.getAllShapes(), file.toPath(), canvas.getHeight(), canvas.getWidth());
+        }
+    }
+
+    public void setStage(Stage stage) throws IOException{
+        this.stage = stage;
+    }
+    private void setScene(){
+        scene = stage.getScene();
     }
 
     @FXML
@@ -79,35 +105,50 @@ public class DrawingController {
     }
 
     public void undoButtonClick(MouseEvent event) {
-//        model.undo();
-        UndoRedo.undo();;
+        model.undo();
         drawCanvas();
     }
 
     public void redoButtonClick(MouseEvent event) {
-//        model.redo();
-        UndoRedo.redo();
+        model.redo();
         drawCanvas();
     }
 
+
     public void canvasClick(MouseEvent event) {
         if (event.isControlDown()) {
-            Optional<Shape> shape = model.shapes.stream()
+            Optional<Shape> optionalShape = model.shapes.stream()
                     .filter(s -> s.isHit(event.getX(), event.getY()))
                     .reduce((first, second) -> second);
-            shape.ifPresent(s -> System.out.println("true"));
+            if(optionalShape.isEmpty())
+                return;
 
-//            shape.ifPresent(s -> UndoRedo.insertInUndoRedo(s, s.getSize, model.getSize()));
-            shape.ifPresent(s -> model.insertInUndoRedo(s, model.getColor()));
-            shape.ifPresent(s -> s.setColor(model.getColor()));
-//            shape.ifPresent(s -> s.reSize(model.getSize()));
+            Shape shape = optionalShape.get();
+
+            if(!model.getColor().equals(shape.getColor())){
+                model.insertInUndoRedo(shape, shape.getColor(), model.getColor());
+                shape.setColor(model.getColor());
+            }
+
+            double scale = getScale(model.getSize());
+            if(scale != shape.getScale()){
+                model.insertInUndoRedo(shape, scale);
+                shape.setScale(scale);
+            }
+
+
         }
         else {
             Shape shape = Model.makeShape(model.getColor(), event.getX(), event.getY(), model.getSize());
             model.shapes.add(shape);
-//            UndoRedo.insertInUndoRedo(shape, model.getSize(),model.getColor());
+ //           model.insertInUndoRedo(shape, model.getScale(),model.getColor());
         }
         drawCanvas();
+    }
+
+    private double getScale(Double scale) {
+        return scale * 0.01;
+
     }
 
 

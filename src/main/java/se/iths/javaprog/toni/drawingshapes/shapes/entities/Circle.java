@@ -8,13 +8,15 @@ import java.util.Objects;
 
 public class Circle extends Shape {
 
-    private double diameter;
     private double radius;
+    private double scaledDiameter;
+    private double scaledRadius;
 
     public Circle(Color color, double x, double y, double diameter) {
         super(color, x, y);
-        this.diameter = diameter;
         this.radius = diameter * 0.5;
+        this.scaledRadius = radius;
+        this.scaledDiameter = diameter;
     }
 
 
@@ -22,7 +24,7 @@ public class Circle extends Shape {
     @Override
     public void draw(GraphicsContext gc) {
         gc.setFill(this.getColor());
-        gc.fillOval(getX()-radius, getY()-radius, diameter,diameter);
+        gc.fillOval(getX()-scaledRadius, getY()-scaledRadius, scaledDiameter,scaledDiameter);
     }
 
     @Override
@@ -31,21 +33,13 @@ public class Circle extends Shape {
         double dy = y - getY();
         double distanceFromCenterSquared = dx * dx + dy * dy;
 
-        return distanceFromCenterSquared < radius*radius;
+        return distanceFromCenterSquared < scaledRadius*scaledRadius;
     }
 
     @Override
-    public void reSize(double diameter){
-        this.diameter = diameter;
-        this.radius = diameter * 0.5;
-    }
-
-    public double getDiameter() {
-        return diameter;
-    }
-
-    public void setDiameter(double diameter) {
-        this.diameter = diameter;
+    public void reScale() {
+        scaledRadius = radius * this.getScale();
+        scaledDiameter = scaledRadius * 2;
     }
 
     public double getRadius() {
@@ -54,5 +48,21 @@ public class Circle extends Shape {
 
     public void setRadius(double radius) {
         this.radius = radius;
+    }
+
+    public double getScaledDiameter() {
+        return scaledDiameter;
+    }
+
+    public void setScaledDiameter(double scaledDiameter) {
+        this.scaledDiameter = scaledDiameter;
+    }
+
+    public double getScaledRadius() {
+        return scaledRadius;
+    }
+
+    public void setScaledRadius(double scaledRadius) {
+        this.scaledRadius = scaledRadius;
     }
 }

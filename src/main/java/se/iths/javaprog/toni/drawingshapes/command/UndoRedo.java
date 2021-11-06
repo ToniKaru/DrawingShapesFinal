@@ -1,36 +1,31 @@
 package se.iths.javaprog.toni.drawingshapes.command;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import se.iths.javaprog.toni.drawingshapes.command.commands.*;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.List;
 
 public class UndoRedo {
 
-    private static Deque<Command> undos = new ArrayDeque<>();
-    private static Deque<Command> redos = new ArrayDeque<>();
+    private Deque<Command> undoStack = new ArrayDeque<>();
+    private Deque<Command> redoStack = new ArrayDeque<>();
 
 
-    public static void undo (){
-       if(!undos.isEmpty()){
-            Command command = undos.pop();
+    public void undo(){
+       if(!undoStack.isEmpty()){
+            Command command = undoStack.pop();
             command.unexecute();
-            redos.push(command);
+            redoStack.push(command);
         }
     }
 
-    public static void redo(){
-        if(!redos.isEmpty()){
-            Command command = redos.pop();
+    public void redo(){
+        if(!redoStack.isEmpty()){
+            Command command = redoStack.pop();
             command.execute();
-            undos.push(command);
+            undoStack.push(command);
         }
     }
 
@@ -51,17 +46,17 @@ public class UndoRedo {
 ////        redos.clear();
 //    }
 //
-    public static void insertInUndoRedo(Shape shape, double oldSize, double newSize){
-//        Command cmd = new Resize(shape, oldSize, newSize);
-//        undos.push(cmd);
-//        redos.clear();
+    public void insertInUndoRedo(Shape shape, double newSize){
+        Command cmd = new Resize(shape, newSize);
+        undoStack.push(cmd);
+        redoStack.clear();
     }
 
 
-    public static void insertInUndoRedo(Shape shape, Color newColor){
-        Command cmd = new ReColor(shape, newColor);
-        undos.push(cmd);
-        redos.clear();
+    public void insertInUndoRedo(Shape shape, Color oldColor, Color newColor){
+        Command cmd = new ReColor(shape, oldColor, newColor);
+        undoStack.push(cmd);
+        redoStack.clear();
     }
 //
 //

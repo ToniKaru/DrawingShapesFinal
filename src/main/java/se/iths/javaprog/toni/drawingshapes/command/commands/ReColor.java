@@ -9,9 +9,9 @@ public class ReColor implements Command {
     private Color oldColor;
     private Color newColor;
 
-    public ReColor(Shape shape, Color newColor) {
+    public ReColor(Shape shape, Color oldColor, Color newColor) {
         this.shape = shape;
-        this.oldColor = shape.getColor();
+        this.oldColor = oldColor;
         this.newColor = newColor;
     }
 

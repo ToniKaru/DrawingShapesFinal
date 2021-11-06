@@ -6,11 +6,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="400" prefWidth="600" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.iths.javaprog.toni.drawingshapes.DrawingController">
+<BorderPane prefHeight="400" prefWidth="600"
+            xmlns="http://javafx.com/javafx/11.0.2"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="se.iths.javaprog.toni.drawingshapes.DrawingController">
     <top>
-        <VBox>
+        <VBox alignment="TOP_RIGHT">
             <MenuBar>
                 <Menu text="File">
+                    <MenuItem onAction="#onOpen" text="Open" />
                     <MenuItem onAction="#onSave" text="Save" />
                     <MenuItem onAction="#onExit" text="Exit" />
                 </Menu>
@@ -46,12 +50,15 @@
     </center>
 
     <left>
-        <VBox>
+        <VBox alignment="TOP_CENTER">
               <ColorPicker fx:id="colorPicker" prefHeight="30.0" prefWidth="55.0" />
-              <Slider fx:id="slider" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-         <Button fx:id="undoButton" mnemonicParsing="false" text="Undo" onMouseClicked="#undoButtonClick"/>
-         <Button fx:id="redoButton" mnemonicParsing="false" text="Redo" onMouseClicked="#redoButtonClick"/>
-            <Button fx:id="clearButton" mnemonicParsing="false" text="Clear" onMouseClicked="#onClearButtonClick"/>
+         <Label text="Larger" />
+              <Slider fx:id="slider" majorTickUnit="50.0" max="200.0" orientation="VERTICAL" showTickMarks="true" snapToTicks="true" value="100.0" />
+         <Label text="Smaller" />
+         <Button fx:id="undoButton" mnemonicParsing="false" onMouseClicked="#undoButtonClick" text="Undo" />
+         <Button fx:id="redoButton" mnemonicParsing="false" onMouseClicked="#redoButtonClick" text="Redo" />
+<!--         <Button fx:id="deleteButton" mnemonicParsing="false" onMouseClicked="#onDeleteButtonClick" text="Delete" textFill="#792c2c" underline="true" />-->
+            <Button fx:id="clearButton" mnemonicParsing="false" onMouseClicked="#onClearButtonClick" text="Clear" underline="true" />
 
         </VBox>
     </left>

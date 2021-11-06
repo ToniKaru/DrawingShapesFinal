@@ -6,49 +6,59 @@ import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 
 public class Square extends Shape {
 
-    private double size;
-    private double halfSize;
+    private double side;
+    private double scaledSide;
+    private double scaledHalfSide;
 
 
-    public Square(Color color, double x, double y, double size) {
+    public Square(Color color, double x, double y, double side) {
         super(color, x, y);
-        this.size = size;
-        this.halfSize = size * 0.5;
+        this.side = side;
+        this.scaledSide = side;
+        this.scaledHalfSide = side * 0.5;
     }
 
     @Override
     public void draw(GraphicsContext gc) {
         gc.setFill(this.getColor());
-        gc.fillRect(getX() - halfSize, getY() - halfSize, size,size);
+        gc.fillRect(getX() - scaledHalfSide, getY() - scaledHalfSide, scaledSide, scaledSide);
     }
 
     @Override
     public boolean isHit(double x, double y) {
-        return x >= this.getX() - halfSize &&
-                x <= this.getX() + halfSize &&
-                y >= this.getY()- halfSize &&
-                y <= this.getY() + halfSize;
+        return x >= this.getX() - scaledHalfSide &&
+                x <= this.getX() + scaledHalfSide &&
+                y >= this.getY()- scaledHalfSide &&
+                y <= this.getY() + scaledHalfSide;
     }
 
     @Override
-    public void reSize(double size){
-        this.size = size;
-        this.halfSize = size * 0.5;
+    public void reScale(){
+        scaledSide = side * this.getScale();
+        scaledHalfSide = scaledSide * 0.5;
     }
 
-    public double getSize() {
-        return size;
+    public double getSide() {
+        return side;
     }
 
-    public void setSize(double size) {
-        this.size = size;
+    public void setSide(double side) {
+        this.side = side;
     }
 
-    public double getHalfSize() {
-        return halfSize;
+    public double getScaledSide() {
+        return scaledSide;
     }
 
-    public void setHalfSize(double halfSize) {
-        this.halfSize = halfSize;
+    public void setScaledSide(double scaledSide) {
+        this.scaledSide = scaledSide;
+    }
+
+    public double getScaledHalfSide() {
+        return scaledHalfSide;
+    }
+
+    public void setScaledHalfSide(double scaledHalfSide) {
+        this.scaledHalfSide = scaledHalfSide;
     }
 }

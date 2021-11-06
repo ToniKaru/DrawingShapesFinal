@@ -2,16 +2,20 @@ package se.iths.javaprog.toni.drawingshapes;
 
 
 import se.iths.javaprog.toni.drawingshapes.command.UndoRedo;
-import se.iths.javaprog.toni.drawingshapes.command.commands.*;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shapes;
+import se.iths.javaprog.toni.drawingshapes.svgIO.SvgIO;
 
+
+import java.net.PortUnreachableException;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 
 
 public class Model {
@@ -26,22 +30,31 @@ public class Model {
     ObservableList<Shape> shapes =
             FXCollections.observableArrayList();
 
+    private UndoRedo undoRedo;
 
-    Model(){
+
+
+
+    Model() {
         this.inColor = new SimpleBooleanProperty();
         this.color = new SimpleObjectProperty<>(Color.BLACK);
-        this.size = new SimpleDoubleProperty(55d);
+        this.size = new SimpleDoubleProperty(100d);
         shapeName = "circle";
+        undoRedo = new UndoRedo();
+    }
+
+    public void insertInUndoRedo(Shape shape, double newScale){
+        undoRedo.insertInUndoRedo(shape, newScale);
     }
 
 
-    public void insertInUndoRedo(Shape shape, Color newColor){
-        UndoRedo.insertInUndoRedo( shape,  newColor);
+    public void insertInUndoRedo(Shape shape, Color oldColor, Color newColor){
+        undoRedo.insertInUndoRedo(shape, oldColor, newColor);
     }
 
     private Optional<Shape> getLastShape() {
         return shapes.stream()
-                .reduce((first, second) -> first);
+                .reduce((first, second) -> second);
     }
 
     public static Shape makeShape(Color color, double x, double y, Double size) {
@@ -54,6 +67,15 @@ public class Model {
 
     public void setShapeName(String shapeName) {
         this.shapeName = shapeName;
+    }
+
+    public void saveShapes(Path path){
+      //  SvgIO.saveToFile(path, this);
+    }
+
+    public List<Shape> getAllShapes(){
+        return shapes.stream()
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public Color getColor(){
@@ -90,5 +112,13 @@ public class Model {
 
     public void setSize(Double size) {
         this.size.set(size);
+    }
+
+    public void undo() {
+        undoRedo.undo();
+    }
+
+    public void redo(){
+        undoRedo.redo();
     }
 }
