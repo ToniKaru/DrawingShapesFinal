@@ -4,12 +4,11 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
-import org.xml.sax.SAXException;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -21,7 +20,9 @@ public class Network {
     public BooleanProperty connected = new SimpleBooleanProperty();
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
     private ExecutorService executorService2 = Executors.newSingleThreadExecutor();
-    ObservableList<Shape> shapes;
+    private ObservableList<Shape> shapes;
+    private static final String START_SVG_TAG = "<";
+
 
     public Network (ObservableList<Shape> shapes){
         this.shapes = shapes;
@@ -32,12 +33,9 @@ public class Network {
         if (connected.get())
             return;
         try {
-
             socket = new Socket("178.174.162.51", 8000);
-
             OutputStream output = socket.getOutputStream();
             writer = new PrintWriter(output, true);
-
             InputStream input = socket.getInputStream();
             reader = new BufferedReader(new InputStreamReader(input));
 
@@ -45,6 +43,7 @@ public class Network {
             System.out.println("Connected to server");
 
             executorService.submit(this::incomingHandler);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,19 +61,52 @@ public class Network {
     private void incomingHandler() {
         try {
             while (true) {
-                String line = reader.readLine();
-                System.out.println(line);
-                String[] start = line.split(" ",2);
-                System.out.println("start[1]: " +start[1]);
-
-                if ("<".equals(start[1].substring(0,1))){
-                    Shape shape = SvgIO.createShapeFromString(start[1]);
-                    Platform.runLater(()-> shapes.add(shape));
-                }
+                getShapes();
             }
         } catch (IOException e) {
             System.out.println("I/O error. Disconnected.");
             Platform.runLater(() -> connected.set(false));
         }
+    }
+
+    private void getShapes() throws IOException {
+        String line = reader.readLine();
+        String incoming = getData(line);
+
+        if (START_SVG_TAG.equals(incoming.substring(0,1))){
+            Platform.runLater(()->
+                    shapes.add(SvgIO.createShapeFromString(incoming)));
+        }
+    }
+
+    private String getData(String line) {
+        String[] arr = line.split(" ",2);
+        return arr[1];
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Network network = (Network) o;
+        return Objects.equals(socket, network.socket) && Objects.equals(writer, network.writer) && Objects.equals(reader, network.reader) && Objects.equals(connected, network.connected) && Objects.equals(executorService, network.executorService) && Objects.equals(executorService2, network.executorService2) && Objects.equals(shapes, network.shapes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(socket, writer, reader, connected, executorService, executorService2, shapes);
+    }
+
+    @Override
+    public String toString() {
+        return "Network{" +
+                "socket=" + socket +
+                ", writer=" + writer +
+                ", reader=" + reader +
+                ", connected=" + connected +
+                ", executorService=" + executorService +
+                ", executorService2=" + executorService2 +
+                ", shapes=" + shapes +
+                '}';
     }
 }

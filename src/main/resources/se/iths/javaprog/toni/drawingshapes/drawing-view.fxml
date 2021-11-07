@@ -2,16 +2,15 @@
 
 <?import java.net.*?>
 <?import javafx.scene.*?>
-<?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import se.iths.javaprog.toni.drawingshapes.ResizableCanvas?>
 <BorderPane prefHeight="400" prefWidth="600" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.iths.javaprog.toni.drawingshapes.DrawingController">
     <top>
         <VBox alignment="TOP_RIGHT">
             <MenuBar>
                 <Menu text="File">
-                    <MenuItem onAction="#onOpen" text="Open" />
                     <MenuItem onAction="#onSave" text="Save" />
                     <MenuItem onAction="#onExit" text="Exit" />
                 </Menu>
@@ -19,21 +18,20 @@
             <ToolBar prefHeight="40.0" prefWidth="100.0">
                       <HBox alignment="CENTER" spacing="5">
                           <Group>
-                              <children>
-                                  <HBox alignment="CENTER" spacing="5">
-                              <Button fx:id="circleButton" onAction="#onCircleButtonClick" text="Circle" />
-                              <Button fx:id="squareButton" onAction="#onSquareButtonClick" text="Square" />
-                                  </HBox>
-                              </children>
+                              <HBox alignment="CENTER" spacing="5">
+                                  <Button onAction="#onCircleButtonClick" text="Circle"/>
+                                  <Button onAction="#onSquareButtonClick" text="Square"/>
+                              </HBox>
                           </Group>
-<!--                          <ToggleButton fx:id="deleteButton" text="Delete"  />-->
                       </HBox>
             </ToolBar>
         </VBox>
     </top>
 
     <center>
-        <Canvas fx:id="canvas" height="600" onMouseClicked="#canvasClick" width="800" />
+        <StackPane prefWidth="600" prefHeight="400">
+        <ResizableCanvas fx:id="canvas" onMouseClicked="#canvasClick" />
+        </StackPane>
     </center>
 
     <left>
@@ -42,9 +40,9 @@
             <Label text="Larger" />
              <Slider fx:id="slider" majorTickUnit="50.0" max="200.0" orientation="VERTICAL" showTickMarks="true" snapToTicks="true" value="100.0" />
             <Label text="Smaller" />
-            <Button fx:id="undoButton" mnemonicParsing="false" onMouseClicked="#undoButtonClick" text="Undo" />
-            <Button fx:id="redoButton" mnemonicParsing="false" onMouseClicked="#redoButtonClick" text="Redo" />
-            <Button fx:id="clearButton" mnemonicParsing="false" onMouseClicked="#onClearButtonClick" text="Clear" underline="true" />
+            <Button mnemonicParsing="false" onMouseClicked="#undoButtonClick" text="Undo" />
+            <Button mnemonicParsing="false" onMouseClicked="#redoButtonClick" text="Redo" />
+            <Button mnemonicParsing="false" onMouseClicked="#onClearButtonClick" text="Clear" underline="true" />
 
          <Button mnemonicParsing="false" onMouseClicked="#onConnectButtonClick" text="Connect" />
         </VBox>

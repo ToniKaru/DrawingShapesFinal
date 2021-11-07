@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shapes;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,8 @@ public class Model {
     private final BooleanProperty inColor;
     private final ObjectProperty<Color> color;
     private final DoubleProperty size;
-    private static ChosenShape chosenShape;
+
+    ChosenShape chosenShape;
 
     ObservableList<Shape> shapes =
             FXCollections.observableArrayList();
@@ -30,7 +32,7 @@ public class Model {
     private Network network;
 
 
-    Model() {
+    public Model() {
         this.inColor = new SimpleBooleanProperty();
         this.color = new SimpleObjectProperty<>(Color.BLACK);
         this.size = new SimpleDoubleProperty(100d);
@@ -46,8 +48,8 @@ public class Model {
     }
 
     public void addShape(Shape shape){
-        shapes.add(shape);
         undoRedo.insertInUndoRedo(shapes, shape);
+        shapes.add(shape);
         network.sendToServer(shape);
     }
 
@@ -97,6 +99,20 @@ public class Model {
         }
     }
 
+
+    public void undo() {
+        undoRedo.undo();
+    }
+
+    public void redo(){
+        undoRedo.redo();
+    }
+
+
+    public UndoRedo getUndoRedo() {
+        return undoRedo;
+    }
+
     public void connect(){
         network.connect();
     }
@@ -141,14 +157,30 @@ public class Model {
         this.size.set(size);
     }
 
-    public void undo() {
-        undoRedo.undo();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Model model = (Model) o;
+        return Objects.equals(inColor, model.inColor) && Objects.equals(color, model.color) && Objects.equals(size, model.size) && Objects.equals(shapes, model.shapes) && Objects.equals(undoRedo, model.undoRedo) && Objects.equals(network, model.network);
     }
 
-    public void redo(){
-        undoRedo.redo();
+    @Override
+    public int hashCode() {
+        return Objects.hash(inColor, color, size, shapes, undoRedo, network);
     }
 
-
+    @Override
+    public String toString() {
+        return "Model{" +
+                "inColor=" + inColor +
+                ", color=" + color +
+                ", size=" + size +
+                ", shapes=" + shapes +
+                ", undoRedo=" + undoRedo +
+                ", network=" + network +
+                '}';
+    }
 }
 

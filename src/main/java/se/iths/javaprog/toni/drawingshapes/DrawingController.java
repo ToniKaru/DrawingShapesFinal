@@ -1,26 +1,28 @@
 package se.iths.javaprog.toni.drawingshapes;
 
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
-import javafx.scene.control.*;
-import javafx.scene.control.Button;
+import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Slider;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import se.iths.javaprog.toni.drawingshapes.shapes.ChosenShape;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.input.MouseEvent;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 
 import static se.iths.javaprog.toni.drawingshapes.drawingio.SvgIO.saveToFile;
 
 public class DrawingController {
 
+    private Model model;
+    private Stage stage;
+    private static final String HOMEPATH = System.getProperty("user.home");
 
     @FXML
     private Canvas canvas;
@@ -28,23 +30,13 @@ public class DrawingController {
     private ColorPicker colorPicker;
     @FXML
     private Slider slider;
-    @FXML
-    private Button circleButton;
-    @FXML
-    private Button squareButton;
-    @FXML
-    private Button undoButton;
-    @FXML
-    private Button redoButton;
-    @FXML
-    private Button deleteButton;
-    @FXML
-    private Button clearButton;
 
-    private Model model;
-    private Stage stage;
 
-    private static final String HOMEPATH = System.getProperty("user.home");
+    public DrawingController(){}
+
+    public DrawingController(Model model){
+        this.model = model;
+    }
 
 
     public void initialize(){
@@ -52,18 +44,9 @@ public class DrawingController {
         colorPicker.valueProperty().bindBidirectional(model.colorProperty());
         slider.valueProperty().bindBidirectional(model.sizeProperty());
 
-        model.shapes.addListener((ListChangeListener<? super Shape>) change -> {
-            drawCanvas();
-        });
+        model.shapes.addListener((ListChangeListener<? super Shape>) change -> drawCanvas());
     }
 
-    @FXML
-    protected void onOpen(){
-        System.out.println("Implementing: open");
-        FileChooser fileChooser = setFileChooser("Open Dialog");
-        File file = fileChooser.showOpenDialog(getWindow());
-
-    }
 
     @FXML
     protected void onSave(){
@@ -87,7 +70,7 @@ public class DrawingController {
         return chooser;
     }
 
-    public void setStage(Stage stage) throws IOException{
+    public void setStage(Stage stage) {
         this.stage = stage;
     }
 
@@ -100,17 +83,19 @@ public class DrawingController {
         Platform.exit();
     }
 
-    public void undoButtonClick(MouseEvent event) {
+    @FXML
+    protected void undoButtonClick(MouseEvent event) {
         model.undo();
         drawCanvas();
     }
 
-    public void redoButtonClick(MouseEvent event) {
+    @FXML
+    protected void redoButtonClick(MouseEvent event) {
         model.redo();
         drawCanvas();
     }
-
-    public void canvasClick(MouseEvent event) {
+    @FXML
+    protected void canvasClick(MouseEvent event) {
         if (event.isControlDown())
             selectMode(event);
         else
@@ -121,8 +106,7 @@ public class DrawingController {
     private void selectMode(MouseEvent event) {
         Optional<Shape> selectedShape =
                 model.getSelectedShape(event.getX(), event.getY());
-        if(selectedShape.isPresent())
-            updateShape(selectedShape.get());
+        selectedShape.ifPresent(this::updateShape);
     }
 
     private void updateShape(Shape shape) {
@@ -157,5 +141,11 @@ public class DrawingController {
         model.shapes.clear();
         drawCanvas();
     }
+
+    public Model getModel() {
+        return model;
+    }
+
+
 
 }

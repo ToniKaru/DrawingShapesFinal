@@ -3,8 +3,6 @@ package se.iths.javaprog.toni.drawingshapes.shapes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.util.Objects;
-
 abstract public class Shape {
 
     private Color color;
@@ -19,6 +17,15 @@ abstract public class Shape {
         this.y = y;
         this.scale = ORIGINAL_SCALE;
     }
+
+    public Shape(Shape shape){
+        this.color = shape.color;
+        this.x = shape.x;
+        this.y = shape.y;
+        this.scale = shape.scale;
+    }
+
+    abstract public Shape copyOf();
 
     abstract public void draw(GraphicsContext context);
 

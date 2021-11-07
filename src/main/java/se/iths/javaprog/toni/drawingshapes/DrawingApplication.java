@@ -3,11 +3,8 @@ package se.iths.javaprog.toni.drawingshapes;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.IOException;
 
 public class DrawingApplication extends Application {
@@ -22,8 +19,6 @@ public class DrawingApplication extends Application {
         controller.setStage(stage);
         stage.show();
     }
-
-
 
     public static void main(String[] args) {
         launch();

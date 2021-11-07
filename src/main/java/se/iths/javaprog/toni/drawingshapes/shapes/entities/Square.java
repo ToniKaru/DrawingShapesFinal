@@ -4,6 +4,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 
+import java.util.Objects;
+
 public class Square extends Shape {
 
     private double side;
@@ -18,18 +20,30 @@ public class Square extends Shape {
         this.scaledHalfSide = side * 0.5;
     }
 
+    private Square(Square square){
+        super(square);
+        this.side = square.side;
+        this.scaledSide = square.scaledSide;
+        this.scaledHalfSide = square.scaledHalfSide;
+    }
+
+    @Override
+    public Square copyOf(){
+        return new Square(this);
+    }
+
     @Override
     public void draw(GraphicsContext gc) {
         gc.setFill(this.getColor());
-        gc.fillRect(getX() - scaledHalfSide, getY() - scaledHalfSide, scaledSide, scaledSide);
+        gc.fillRect(getX(), getY(), scaledSide, scaledSide);
     }
 
     @Override
     public boolean isHit(double x, double y) {
-        return x >= this.getX() - scaledHalfSide &&
-                x <= this.getX() + scaledHalfSide &&
-                y >= this.getY()- scaledHalfSide &&
-                y <= this.getY() + scaledHalfSide;
+        return x >= this.getX()  &&
+                x <= this.getX() + scaledSide &&
+                y >= this.getY() &&
+                y <= this.getY() + scaledSide;
     }
 
     @Override
@@ -60,5 +74,27 @@ public class Square extends Shape {
 
     public void setScaledHalfSide(double scaledHalfSide) {
         this.scaledHalfSide = scaledHalfSide;
+    }
+
+    @Override
+    public String toString() {
+        return "Square{" +
+                "side=" + side +
+                ", scaledSide=" + scaledSide +
+                ", scaledHalfSide=" + scaledHalfSide +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Square square = (Square) o;
+        return Double.compare(square.side, side) == 0 && Double.compare(square.scaledSide, scaledSide) == 0 && Double.compare(square.scaledHalfSide, scaledHalfSide) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(side, scaledSide, scaledHalfSide);
     }
 }
