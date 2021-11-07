@@ -45,6 +45,8 @@
             <Button fx:id="undoButton" mnemonicParsing="false" onMouseClicked="#undoButtonClick" text="Undo" />
             <Button fx:id="redoButton" mnemonicParsing="false" onMouseClicked="#redoButtonClick" text="Redo" />
             <Button fx:id="clearButton" mnemonicParsing="false" onMouseClicked="#onClearButtonClick" text="Clear" underline="true" />
+
+         <Button mnemonicParsing="false" onMouseClicked="#onConnectButtonClick" text="Connect" />
         </VBox>
     </left>
 

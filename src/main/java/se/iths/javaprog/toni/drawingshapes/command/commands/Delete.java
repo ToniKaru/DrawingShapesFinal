@@ -1,14 +1,17 @@
 package se.iths.javaprog.toni.drawingshapes.command.commands;
 
-import javafx.collections.ObservableList;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Delete implements Command {
 
-    private ObservableList<Shape> shapes;
+    private List<Shape> shapes = new ArrayList<>();
     private Shape shape;
 
-    public Delete(Shape shape) {
+    public Delete(List<Shape> shapes, Shape shape) {
+        this.shapes = shapes;
         this.shape = shape;
     }
 

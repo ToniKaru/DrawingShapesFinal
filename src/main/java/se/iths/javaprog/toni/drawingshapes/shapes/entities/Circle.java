@@ -20,7 +20,6 @@ public class Circle extends Shape {
     }
 
 
-
     @Override
     public void draw(GraphicsContext gc) {
         gc.setFill(this.getColor());

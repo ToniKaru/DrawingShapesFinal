@@ -31,16 +31,6 @@ public class UndoRedo {
     }
 
 
-
-//    private static void UndoColor(){
-//        if(undo.isEmpty())
-//            return;
-//        redo.push(undo.peekLast());
-//        Command command = undo.removeLast();
-//        command.execute();
-//    }
-
-
     public void insertInUndoRedo(List<Shape> shapes, Shape shape){
         Command cmd = new Insert(shapes, shape);
         undoStack.push(cmd);
@@ -53,18 +43,17 @@ public class UndoRedo {
         redoStack.clear();
     }
 
-
     public void insertInUndoRedo(Shape shape, Color oldColor, Color newColor){
         Command cmd = new ReColor(shape, oldColor, newColor);
         undoStack.push(cmd);
         redoStack.clear();
     }
 
-    public void insertInUndoRedoForDelete(List<Shape> shapes, Shape shape){
-        Command cmd = new Delete(shapes, shape);
-        undoStack.push(cmd);
-        redoStack.clear();
-    }
+//    public void insertInUndoRedoForDelete(List<Shape> shapes, Shape shape){
+//        Command cmd = new Delete(shapes, shape);
+//        undoStack.push(cmd);
+//        redoStack.clear();
+//    }
 
 
 

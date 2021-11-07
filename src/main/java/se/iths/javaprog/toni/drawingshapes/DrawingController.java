@@ -1,11 +1,12 @@
 package se.iths.javaprog.toni.drawingshapes;
 
-import javafx.scene.Scene;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import se.iths.javaprog.toni.drawingshapes.shapes.ChosenShape;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -16,7 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-import static se.iths.javaprog.toni.drawingshapes.fileIO.SvgIO.saveToFile;
+import static se.iths.javaprog.toni.drawingshapes.drawingio.SvgIO.saveToFile;
 
 public class DrawingController {
 
@@ -51,45 +52,47 @@ public class DrawingController {
         colorPicker.valueProperty().bindBidirectional(model.colorProperty());
         slider.valueProperty().bindBidirectional(model.sizeProperty());
 
+        model.shapes.addListener((ListChangeListener<? super Shape>) change -> {
+            drawCanvas();
+        });
     }
 
     @FXML
     protected void onOpen(){
-//        System.out.println("Implementing: open");
-//        FileChooser fileChooser = new FileChooser();
-//        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("svg file", ".svg");
-//        fileChooser.getExtensionFilters().add(extFilter);
-//        fileChooser.setTitle("Open Dialog");
-//        File file = fileChooser.showOpenDialog(getWindow());
-//
-//        if (file != null){
-//            readFile(file.toPath(), canvas.getHeight(), canvas.getWidth());
-//        }
+        System.out.println("Implementing: open");
+        FileChooser fileChooser = setFileChooser("Open Dialog");
+        File file = fileChooser.showOpenDialog(getWindow());
 
     }
 
     @FXML
     protected void onSave(){
-        FileChooser chooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("svg file", ".svg");
-        chooser.getExtensionFilters().add(extFilter);
-        chooser.setInitialDirectory(new File(HOMEPATH));
-        chooser.setTitle("Save Dialog");
+        FileChooser chooser = setFileChooser("Save Dialog");
         chooser.setInitialFileName("myShapes");
-
         File file = chooser.showSaveDialog(getWindow());
 
         if (file != null){
-            saveToFile(model.getAllShapes(), file.toPath(), canvas.getHeight(), canvas.getWidth());
+            saveToFile(model.getAllShapes(), file.toPath(),
+                    canvas.getHeight(), canvas.getWidth());
         }
+    }
+
+    private FileChooser setFileChooser(String title) {
+        FileChooser chooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter =
+                new FileChooser.ExtensionFilter("svg file", "*.svg");
+        chooser.getExtensionFilters().add(extFilter);
+        chooser.setInitialDirectory(new File(HOMEPATH));
+        chooser.setTitle(title);
+        return chooser;
     }
 
     public void setStage(Stage stage) throws IOException{
         this.stage = stage;
     }
+
     private Window getWindow(){
         return stage.getScene().getWindow();
-
     }
 
     @FXML
@@ -107,40 +110,24 @@ public class DrawingController {
         drawCanvas();
     }
 
-
     public void canvasClick(MouseEvent event) {
-        if (event.isControlDown()) {
-            Optional<Shape> optionalShape = model.shapes.stream()
-                    .filter(s -> s.isHit(event.getX(), event.getY()))
-                    .reduce((first, second) -> second);
-            if(optionalShape.isEmpty())
-                return;
-
-            Shape shape = optionalShape.get();
-
-            if(!model.getColor().equals(shape.getColor())){
-                model.insertInUndoRedo(shape, shape.getColor(), model.getColor());
-                shape.setColor(model.getColor());
-            }
-
-            double scale = getScale(model.getSize());
-            if(scale != shape.getScale()){
-                model.insertInUndoRedo(shape, scale);
-                shape.setScale(scale);
-            }
-        }
-
-        else {
-            Shape shape = Model.makeShape(model.getColor(), event.getX(), event.getY(), model.getSize());
-            model.shapes.add(shape);
-            model.insertInUndoRedo(model.shapes, shape);
-        }
+        if (event.isControlDown())
+            selectMode(event);
+        else
+            model.makeShape(event.getX(), event.getY());
         drawCanvas();
     }
 
-    private double getScale(Double scale) {
-        return scale * 0.01;
+    private void selectMode(MouseEvent event) {
+        Optional<Shape> selectedShape =
+                model.getSelectedShape(event.getX(), event.getY());
+        if(selectedShape.isPresent())
+            updateShape(selectedShape.get());
+    }
 
+    private void updateShape(Shape shape) {
+        model.updateColor(shape);
+        model.updateScale(shape);
     }
 
     private void drawCanvas() {
@@ -152,16 +139,19 @@ public class DrawingController {
     }
 
     @FXML
+    protected void onConnectButtonClick(){
+        model.connect();
+    }
+
+    @FXML
     protected void onCircleButtonClick(){
-        model.setShapeName("circle");
+        model.setChosenShape(ChosenShape.CIRCLE);
     }
 
     @FXML
     protected void onSquareButtonClick() {
-        model.setShapeName("square");
+        model.setChosenShape(ChosenShape.SQUARE);
     }
-
-
 
     public void onClearButtonClick(MouseEvent event){
         model.shapes.clear();

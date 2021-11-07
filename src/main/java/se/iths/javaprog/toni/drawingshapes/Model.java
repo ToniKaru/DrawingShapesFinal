@@ -2,15 +2,14 @@ package se.iths.javaprog.toni.drawingshapes;
 
 
 import se.iths.javaprog.toni.drawingshapes.command.UndoRedo;
+import se.iths.javaprog.toni.drawingshapes.drawingio.Network;
+import se.iths.javaprog.toni.drawingshapes.shapes.ChosenShape;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shape;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import se.iths.javaprog.toni.drawingshapes.shapes.Shapes;
-
-
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,65 +19,90 @@ public class Model {
 
     private final BooleanProperty inColor;
     private final ObjectProperty<Color> color;
-
     private final DoubleProperty size;
-
-    private static String shapeName;
+    private static ChosenShape chosenShape;
 
     ObservableList<Shape> shapes =
             FXCollections.observableArrayList();
 
     private UndoRedo undoRedo;
 
+    private Network network;
+
 
     Model() {
         this.inColor = new SimpleBooleanProperty();
         this.color = new SimpleObjectProperty<>(Color.BLACK);
         this.size = new SimpleDoubleProperty(100d);
-        shapeName = "circle";
+        chosenShape = ChosenShape.CIRCLE;
         undoRedo = new UndoRedo();
+        network = new Network(shapes);
     }
 
-    public void insertInUndoRedoForDelete(List<Shape> shapes, Shape shape) {
-        undoRedo.insertInUndoRedoForDelete(shapes, shape);
+
+    public void makeShape(double x, double y) {
+        Shape shape = createShape(x, y);
+        addShape(shape);
     }
 
-    public void insertInUndoRedo(List<Shape> shapes, Shape shape){
+    public void addShape(Shape shape){
+        shapes.add(shape);
         undoRedo.insertInUndoRedo(shapes, shape);
+        network.sendToServer(shape);
     }
 
-    public void insertInUndoRedo(Shape shape, double newScale){
-        undoRedo.insertInUndoRedo(shape, newScale);
-    }
-
-    public void insertInUndoRedo(Shape shape, Color oldColor, Color newColor){
-        undoRedo.insertInUndoRedo(shape, oldColor, newColor);
-    }
-
-    private Optional<Shape> getLastShape() {
-        return shapes.stream()
-                .reduce((first, second) -> second);
-    }
-
-    public static Shape makeShape(Color color, double x, double y, Double size) {
-        return switch (shapeName) {
-            case "circle" -> Shapes.circleOf(color,x,y,size);
-            case "square" -> Shapes.squareOf(color,x,y,size);
-            default -> throw new IllegalArgumentException();
+    public static Shape createShape (ChosenShape type, double x, double y, Color color, double size){
+        return switch (type) {
+            case CIRCLE -> Shapes.circleOf(color, x, y, size);
+            case SQUARE -> Shapes.squareOf(color, x, y, size);
         };
     }
 
-    public void setShapeName(String shapeName) {
-        this.shapeName = shapeName;
+    private Shape createShape(double x, double y) {
+         return switch (chosenShape) {
+             case CIRCLE -> Shapes.circleOf(this.getColor(), x, y,this.getSize());
+             case SQUARE -> Shapes.squareOf(this.getColor(), x, y,this.getSize());
+        };
     }
 
-    public void saveShapes(Path path){
-      //  SvgIO.saveToFile(path, this);
+    public void setChosenShape(ChosenShape chosenShape) {
+        this.chosenShape = chosenShape;
+    }
+
+    public Optional<Shape> getSelectedShape(double x, double y) {
+         return shapes.stream()
+                .filter(s -> s.isHit(x, y))
+                .reduce((first, second) -> second);
     }
 
     public List<Shape> getAllShapes(){
         return shapes.stream()
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    public void updateColor(Shape shape) {
+        if(!getColor().equals(shape.getColor())) {
+            undoRedo.insertInUndoRedo(shape, shape.getColor(), getColor());
+            shape.setColor(getColor());
+            network.sendToServer(shape);
+        }
+    }
+
+    public void updateScale(Shape shape) {
+        var scale = getScale();
+        if(scale != shape.getScale()){
+            undoRedo.insertInUndoRedo(shape, scale);
+            shape.setScale(scale);
+            network.sendToServer(shape);
+        }
+    }
+
+    public void connect(){
+        network.connect();
+    }
+
+    private double getScale() {
+        return size.get() * 0.01;
     }
 
     public Color getColor(){
@@ -124,4 +148,7 @@ public class Model {
     public void redo(){
         undoRedo.redo();
     }
+
+
 }
+
