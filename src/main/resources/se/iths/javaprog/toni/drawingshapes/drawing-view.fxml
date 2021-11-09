@@ -43,7 +43,7 @@
             <Button mnemonicParsing="false" onMouseClicked="#undoButtonClick" text="Undo" />
             <Button mnemonicParsing="false" onMouseClicked="#redoButtonClick" text="Redo" />
             <Button mnemonicParsing="false" onMouseClicked="#onClearButtonClick" text="Clear" underline="true" />
-
+            <Button mnemonicParsing="false" onMouseClicked="#onDisconnectButtonClick" text="Disconnect" />
          <Button mnemonicParsing="false" onMouseClicked="#onConnectButtonClick" text="Connect" />
         </VBox>
     </left>

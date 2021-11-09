@@ -24,12 +24,12 @@ public class Network {
     private static final String START_SVG_TAG = "<";
 
 
-    public Network (ObservableList<Shape> shapes){
+    public Network(ObservableList<Shape> shapes) {
         this.shapes = shapes;
 
     }
 
-    public void connect(){
+    public void connect() {
         if (connected.get())
             return;
         try {
@@ -51,7 +51,7 @@ public class Network {
 
     public void sendToServer(Shape shape) {
         if (connected.get()) {
-            executorService2.submit(()->{
+            executorService2.submit(() -> {
                 String svgShape = SvgIO.svgRowString(shape);
                 writer.println(svgShape);
             });
@@ -73,14 +73,14 @@ public class Network {
         String line = reader.readLine();
         String incoming = getData(line);
 
-        if (START_SVG_TAG.equals(incoming.substring(0,1))){
-            Platform.runLater(()->
+        if (START_SVG_TAG.equals(incoming.substring(0, 1))) {
+            Platform.runLater(() ->
                     shapes.add(SvgIO.createShapeFromString(incoming)));
         }
     }
 
     private String getData(String line) {
-        String[] arr = line.split(" ",2);
+        String[] arr = line.split(" ", 2);
         return arr[1];
     }
 
@@ -108,5 +108,16 @@ public class Network {
                 ", executorService2=" + executorService2 +
                 ", shapes=" + shapes +
                 '}';
+    }
+
+    public void disconnect() {
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                System.out.println("Could not disconnect.");
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -128,6 +128,11 @@ public class DrawingController {
     }
 
     @FXML
+    protected void onDisconnectButtonClick(){
+        model.disconnect();
+    }
+
+    @FXML
     protected void onCircleButtonClick(){
         model.setChosenShape(ChosenShape.CIRCLE);
     }

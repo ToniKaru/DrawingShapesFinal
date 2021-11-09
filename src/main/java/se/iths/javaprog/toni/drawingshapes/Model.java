@@ -117,6 +117,10 @@ public class Model {
         network.connect();
     }
 
+    public void disconnect() {
+        network.disconnect();
+    }
+
     private double getScale() {
         return size.get() * 0.01;
     }
@@ -182,5 +186,6 @@ public class Model {
                 ", network=" + network +
                 '}';
     }
+
 }
 
