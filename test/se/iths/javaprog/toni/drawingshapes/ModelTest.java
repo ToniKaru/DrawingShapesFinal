@@ -36,10 +36,9 @@ class ModelTest {
         model.shapes.add(shape1);
         model.shapes.add(shape2);
         Optional<Shape> hitShape = model.getSelectedShape(30,40);
-        Shape shape = null;
-        if(hitShape.isPresent())
+        Shape shape;
+        assertTrue(hitShape.isPresent());
             shape = hitShape.get();
         assertEquals(shape1, shape);
-        
     }
 }
