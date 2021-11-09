@@ -3,6 +3,8 @@ package se.iths.javaprog.toni.drawingshapes.shapes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.Objects;
+
 abstract public class Shape {
 
     private Color color;
@@ -66,5 +68,26 @@ abstract public class Shape {
         this.y = y;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Shape shape = (Shape) o;
+        return Double.compare(shape.x, x) == 0 && Double.compare(shape.y, y) == 0 && Double.compare(shape.scale, scale) == 0 && Objects.equals(color, shape.color);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, x, y, scale);
+    }
+
+    @Override
+    public String toString() {
+        return "Shape{" +
+                "color=" + color +
+                ", x=" + x +
+                ", y=" + y +
+                ", scale=" + scale +
+                '}';
+    }
 }
